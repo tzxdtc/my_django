@@ -1,29 +1,20 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views import generic
 from .forms import DayCreateForm
 from .models import Day
 
 
-def index(request):
-    context = {
-        'day_list': Day.objects.all(),
-    }
-    return render(request, 'diary/day_list.html', context)
+class IndexView(generic.ListView):
+    model = Day
+    paginate_by = 3
 
 
-def add(request):
-    # 送信内容を基にフォームを作る。POSTじゃなければ、空のフォーム
-    form = DayCreateForm(request.POST or None)
-    
-    # method=POST、つまり送信ボタン押下時、入力内容が問題なければ
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect('diary:index')
-    
-    # 通常時のページアクセスや、入力内容に誤りがあればまたページを表示
-    context = {
-        'form': form
-    }
-    return render(request, 'diary/day_form.html', context)
+class AddView(LoginRequiredMixin,generic.CreateView):
+    model = Day
+    form_class = DayCreateForm
+    success_url = reverse_lazy('diary:index')
 
 
 def update(request, pk):
@@ -37,12 +28,12 @@ def update(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         return redirect('diary:index')
-    
+
     # 通常時のページアクセスや、入力内容に誤りがあればまたページを表示
     context = {
         'form': form
     }
-    return render(request, 'diary/day_form.html', context) 
+    return render(request, 'diary/day_form.html', context)
 
 
 def delete(request, pk):
@@ -53,12 +44,12 @@ def delete(request, pk):
     if request.method == 'POST':
         day.delete()
         return redirect('diary:index')
-    
+
     # 通常時のページアクセスや、入力内容に誤りがあればまたページを表示
     context = {
         'day': day,
     }
-    return render(request, 'diary/day_confirm_delete.html', context) 
+    return render(request, 'diary/day_confirm_delete.html', context)
 
 
 def detail(request, pk):
@@ -69,4 +60,4 @@ def detail(request, pk):
     context = {
         'day': day,
     }
-    return render(request, 'diary/day_detail.html', context) 
+    return render(request, 'diary/day_detail.html', context)
