@@ -5,7 +5,7 @@ from .models import Employee
 
 class IndexView(generic.ListView):
     model = Employee
-    paginate_by = 1
+    paginate_by = 4
 
     def get_context_data(self):
         """テンプレートへ渡す辞書の作成"""
