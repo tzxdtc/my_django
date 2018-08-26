@@ -2,7 +2,21 @@
 
 {% block content %}
 <form action="" method="POST">
-  {{form.as_p}}
+  <table class="table">
+    <tr>
+      <th>タイトル</th>
+      <th>{{ form.title }}</th>
+    </tr>
+    <tr>
+      <td>本文</td>
+      <td>{{ form.title }}</td>
+    </tr>
+    <tr>
+      <td>日付</td>
+      <td>{{ form.date }}</td>
+    </tr>
+  </table>
+
   <button type='submit'>send</button>
   {% csrf_token %}
 </form>
